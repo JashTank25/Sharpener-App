@@ -9,6 +9,8 @@ export default function CodeEditor({ value }) {
   const [error, setError] = useState("");
   const [isRunning, setIsRunning] = useState(false);
   const [cooldown, setCooldown] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitCooldown, setSubmitCooldown] = useState(0);
   const [initialJavaCode, setInitialJavaCode] = useState("");
   const [initialPythonCode] = useState(
     `def example_function(a, b):\n    # Write code here...\n \t`
@@ -53,10 +55,52 @@ export default function CodeEditor({ value }) {
     }
   };
 
+  const submitCode = async () => {
+    if (isSubmitting || submitCooldown > 0) return;
+
+    setIsSubmitting(true);
+    setOutput("");
+    setError("");
+
+    try {
+      const response = await fetch("http://localhost:5000/submit-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, language }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit code");
+      }
+
+      setOutput(data.message);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsSubmitting(false);
+      startSubmitCooldown();
+    }
+  };
+
   const startCooldown = () => {
     setCooldown(30);
     const interval = setInterval(() => {
       setCooldown((prev) => {
+        if (prev === 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const startSubmitCooldown = () => {
+    setSubmitCooldown(30);
+    const interval = setInterval(() => {
+      setSubmitCooldown((prev) => {
         if (prev === 1) {
           clearInterval(interval);
           return 0;
@@ -111,8 +155,13 @@ export default function CodeEditor({ value }) {
         <button onClick={runCode} disabled={isRunning || cooldown > 0}>
           <Button value={`Run Code ${cooldown > 0 ? `(${cooldown}s)` : ""}`} />
         </button>
-        <button disabled={cooldown > 0}>
-          <Button value="Submit" />
+        <button
+          onClick={submitCode}
+          disabled={isSubmitting || submitCooldown > 0}
+        >
+          <Button
+            value={`Submit ${submitCooldown > 0 ? `(${submitCooldown}s)` : ""}`}
+          />
         </button>
       </div>
 

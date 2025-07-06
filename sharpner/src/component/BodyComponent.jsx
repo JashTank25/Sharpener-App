@@ -37,7 +37,7 @@ export default function BodyComponent() {
   return (
     <div className="flex flex-col gap-2">
       <div>
-        <Title />
+        <Title title="Welcome to Sharpener" />
       </div>
       <div>
         <h1 className="text-start text-3xl text-amber-200">

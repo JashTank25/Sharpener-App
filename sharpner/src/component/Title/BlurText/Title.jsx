@@ -5,11 +5,11 @@ const handleAnimationComplete = () => {
   console.log("Animation completed!");
 };
 
-export default function Title() {
+export default function Title({ title }) {
   return (
     <>
       <BlurText
-        text="Welcome to Sharpener"
+        text={title}
         delay={150}
         animateBy="words"
         direction="top"

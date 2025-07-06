@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import Background from "./component/Background/Squares/Backgorund";
 import BodyComponent from "./component/BodyComponent";
+import { Outlet } from "react-router-dom";
 
 function App() {
   const [isMobile, setIsMobile] = useState(false);
@@ -34,7 +35,7 @@ function App() {
         <Background />
       </div>
       <div className="absolute inset-0 flex my-16 justify-center z-0">
-        <BodyComponent />
+        <Outlet />
       </div>
     </>
   );

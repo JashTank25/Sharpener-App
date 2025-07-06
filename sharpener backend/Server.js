@@ -39,8 +39,6 @@ app.post("/run", async (req, res) => {
   // Find the question with today's date
   const question = await QuestionSet.findOne({ showing_date: formattedDate });
 
-  console.log(question);
-
   let testCode = code;
   if (language === "java") {
     testCode = `

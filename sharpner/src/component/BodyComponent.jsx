@@ -8,9 +8,10 @@ export default function BodyComponent() {
   const [question, setQuestion] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
-    fetch("http://localhost:5000/get-todays-question")
+    fetch(`${backendUrl}/get-todays-question`)
       .then((response) => response.json())
       .then((data) => {
         if (data.message) {

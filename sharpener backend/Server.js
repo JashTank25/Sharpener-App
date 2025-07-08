@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -6,9 +7,10 @@ const { executeCode } = require("./executeCode");
 const Code = require("./CodeSchema");
 const QuestionSet = require("./Schema");
 const SubmitAnswer = require("./SubmitSchema");
+const { truncateSync } = require("fs");
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -16,10 +18,13 @@ app.use(bodyParser.json());
 
 // MongoDB Connection
 mongoose
-  .connect("mongodb://localhost:27017/sharpenerDB", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    process.env.MONGODB_URI,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
@@ -79,7 +84,14 @@ app.post("/run", async (req, res) => {
     res.status(400).json({ error: data[1].trim() });
   }
 });
-
+app.get("/get-all-questions", async (req, res) => {
+  try {
+    const questions = await QuestionSet.find().sort({ showing_date: -1 });
+    res.json(questions);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching questions" });
+  }
+});
 app.get("/submissions", async (req, res) => {
   try {
     const submissions = await Code.find().sort({ timestamp: -1 });

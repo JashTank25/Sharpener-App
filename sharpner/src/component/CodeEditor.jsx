@@ -15,6 +15,7 @@ export default function CodeEditor({ value }) {
   const [initialPythonCode] = useState(
     `def example_function(a, b):\n    # Write code here...\n \t`
   );
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const question = value;
 
@@ -34,7 +35,7 @@ export default function CodeEditor({ value }) {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/run", {
+      const response = await fetch(`${backendUrl}/run`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code, language, testType: "initial" }),
@@ -63,7 +64,7 @@ export default function CodeEditor({ value }) {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/submit-code", {
+      const response = await fetch(`${backendUrl}/submit-code`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code, language }),

@@ -28,7 +28,7 @@ Imagine a friendly **coding dojo**, where every day a new problem awaits you. So
 1️⃣ Clone the repository:
 
 ```bash
-git clone https://github.com/JashTank25/sharpener.git https://github.com/JashTank25/Sharpener-App.git
+git clone https://github.com/JashTank25/Sharpener-App.git
 ```
 
 2️⃣ Install dependencies:
